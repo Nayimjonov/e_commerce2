@@ -1,6 +1,6 @@
 from django.db import models
 
-from products.models import Product
+from products.models import Products
 
 
 class Orders(models.Model):
@@ -19,4 +19,7 @@ class Orders(models.Model):
 
 class OrderItems(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='order_items')
-    product = models.ForeignKey(Products, )
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='order_items')
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
