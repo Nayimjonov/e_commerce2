@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Category(models.Model):
+class Categories(models.Model):
     name = models.CharField(max_length=155)
     description = models.TextField()
 
