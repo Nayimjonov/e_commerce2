@@ -1,7 +1,9 @@
 from django.db import models
 
+from products.models import Product
 
-class Order(models.Model):
+
+class Orders(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('completed', 'Completed'),
@@ -14,3 +16,7 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
+
+class OrderItems(models.Model):
+    order = models.ForeignKey(Orders, on_delete=models.CASCADE, related_name='order_items')
+    product = models.ForeignKey(Products, )
