@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Products
+from .models import Product
 
 
-@admin.register(Products)
+@admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'price', 'stock', 'category')
     search_fields = ('name', 'description')
