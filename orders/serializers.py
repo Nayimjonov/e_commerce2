@@ -1,16 +1,25 @@
 from rest_framework import serializers
 from .models import OrderItem, Order
 from products.models import Product
-from products.serializers import ProductModelSerializer
 
+
+class ItemSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product = ProductModelSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source='product', write_only=True)
 
     class Meta:
         model = OrderItem
         fields = ('product', 'product_id', 'quantity', 'price')
+
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['product'] = ItemSerializer(instance.product).data
+        return data
+
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -27,6 +36,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'items',
             'total_price',
             'status',
+            'shipping_address',
             'created_at',
         )
 
