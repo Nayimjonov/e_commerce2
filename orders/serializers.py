@@ -15,7 +15,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(source='order_items', many=True)
-    shipping_address = serializers.CharField(max_length=255)
+    status = serializers.CharField(default="processing", read_only=True)
 
     class Meta:
         model = Order
@@ -24,15 +24,14 @@ class OrderSerializer(serializers.ModelSerializer):
             'customer_name',
             'customer_email',
             'customer_phone',
-            'shipping_address',
+            'items',
             'total_price',
             'status',
             'created_at',
-            'items'
         )
 
     def create(self, validated_data):
-        items_data = validated_data.pop('order_items')
+        items_data = validated_data.pop('order_items', [])
         order = Order.objects.create(**validated_data)
         total_price = 0
 
