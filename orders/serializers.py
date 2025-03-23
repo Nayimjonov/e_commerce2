@@ -17,6 +17,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
+    shipping_address = serializers.CharField(read_only=True)
 
     class Meta:
         model = Order

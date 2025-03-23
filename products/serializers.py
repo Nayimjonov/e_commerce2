@@ -9,7 +9,3 @@ class ProductModelSerializer(serializers.ModelSerializer):
         model = Product
         fields = ('id', 'name', 'description', 'price', 'stock', 'category')
 
-        def to_representation(self, instance):
-            data = super().to_representation(instance)
-            data['category'] = CategoryModelSerializer(instance.autcategoryhor).data
-            return data
