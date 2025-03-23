@@ -2,13 +2,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 from .models import Order
 from .serializers import OrderSerializer
-from rest_framework.pagination import PageNumberPagination
 
 
 class OrderPagination(PageNumberPagination):
     page_size = 10
+
 
 class OrderListCreateAPIView(APIView):
     def get(self, request):
@@ -22,8 +23,8 @@ class OrderListCreateAPIView(APIView):
     def post(self, request):
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            order = serializer.save()
+            return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

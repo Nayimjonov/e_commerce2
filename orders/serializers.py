@@ -6,9 +6,7 @@ from products.serializers import ProductModelSerializer
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductModelSerializer(read_only=True)
-    product_id = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.all(), write_only=True, source='product'
-    )
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source='product', write_only=True)
 
     class Meta:
         model = OrderItem
@@ -16,8 +14,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True)
-    shipping_address = serializers.CharField(read_only=True)
+    items = OrderItemSerializer(source='order_items', many=True)
+    shipping_address = serializers.CharField(max_length=255)
 
     class Meta:
         model = Order
@@ -27,17 +25,17 @@ class OrderSerializer(serializers.ModelSerializer):
             'customer_email',
             'customer_phone',
             'shipping_address',
-            'items',
             'total_price',
             'status',
-            'created_at'
+            'created_at',
+            'items'
         )
 
     def create(self, validated_data):
-        items_data = validated_data.pop('items')
+        items_data = validated_data.pop('order_items')
         order = Order.objects.create(**validated_data)
-
         total_price = 0
+
         for item_data in items_data:
             product = item_data['product']
             quantity = item_data['quantity']
